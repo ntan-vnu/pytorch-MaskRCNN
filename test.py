@@ -85,12 +85,12 @@ def main():
     colors = [list(np.random.choice(range(256), size=3)) for i in range(len(predict[0]['masks']))]
     mask = np.zeros(img.shape)
     for i, mm in enumerate(predict[0]['masks']): 
-        mm = mm.to('cpu').detach().numpy()[0]
-        mm = (mm > 0.5).astype(int)
-        mm = np.stack([mm]*3, axis=2) * colors[i]
-        mask += mm
-    cv2.imwrite('output/mask.jpg', mask)
-    
+        if predict[0]['scores'][i] > 0.8:
+            mm = mm.to('cpu').detach().numpy()[0]
+            mm = (mm > 0.5).astype(int)
+            mm = np.stack([mm]*3, axis=2) * colors[i]
+            mask += mm
+    cv2.imwrite('output/mask.jpg', mask)    
 
 if __name__ == "__main__":
     main()
